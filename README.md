@@ -74,6 +74,11 @@ The decoder output of the final decoder block will feed into the output block. I
 
 If the mode is inference, top_p probability is calculated and the next token is generated. The next tokens generated will stop if the max generation length is reached or the end of sentence token is generated as the next token.
 
+Results after training for 2500 epochs
+
+![image](https://github.com/user-attachments/assets/aea68b05-8394-4e0b-bd38-249c71dfc2ee)
+
+
 If the mode is Training, loss is computed with the target labels and training is repeated till the max epochs length is reached.
 
 Llama 3 and its other variances are the most popular open-source LLM currently available in the LLM space. I believe the ability to build Llama 3 from scratch provides all the necessary foundation to build a lot of new exciting LLM-based applications. I truly believe that knowledge should be free to all. Feel free to use the source code and update it to build your personal or professional projects. Good luck to you all.

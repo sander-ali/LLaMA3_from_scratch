@@ -610,7 +610,8 @@ def sample_top_p(probs, p):
     return next_token
 
 ## Perform the inferencing on user input prompts
-prompts = "Consider you what services he has done"
+prompts = "What thy shall be done with you"
 output_tokens, output_texts = generate(model, prompts, ModelArgs)
 output_texts = output_texts[0].replace("<|begin_of_text|>", "")
 print(output_texts)
+

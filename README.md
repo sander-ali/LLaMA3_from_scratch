@@ -9,11 +9,11 @@ Following details are the culmination of information available at
 
 The code implements the architecture in the same sequence as shown in the image below. 
 
-![image](https://github.com/user-attachments/assets/37c0b66b-b995-4243-bdde-54a2156d7a06)
+![Complete_architecture_LLAMA3](https://github.com/user-attachments/assets/7bcb40cd-0cee-4cf8-bfa6-269e0bad0c0b)
 
 The input block has 3 components Texts/Prompts, Tokenizer, and Embeddings. Therefore, the first step is to code for the input block as shown in the following image
 
-![image](https://github.com/user-attachments/assets/a3b962ad-275f-4a6d-89af-669f5abaf389)
+![input_block_LLAMA3](https://github.com/user-attachments/assets/e0c04f6c-ffe7-4969-9b1f-632a4c1b3bae)
 
 - The input to the model should always be in number format as it is unable to process text. Tokenizer helps to convert these texts/prompts into token-ids (which is an index number representation of tokens in vocabulary). We’ll use the popular Tiny Shakespeare dataset to build the vocabulary and also train our model.
   
@@ -24,16 +24,18 @@ The input block has 3 components Texts/Prompts, Tokenizer, and Embeddings. There
 Step 2 is to implement the Decoder Block, which includes:
 
 - RMSNorm
-![image](https://github.com/user-attachments/assets/49b4797c-5a3a-4554-aa22-ff6fab160978)
+![RMSNorm_LLAMA3](https://github.com/user-attachments/assets/7c245dbf-b88e-445f-a7ea-564cd96ab5d1)
+
 
 Just like layer normalization, RMSNorm is applied along the embedding features or dimension. The diagram above has embeddings of shape [3,3] meaning each token has 3 dimensions.
 
 Why RMSNorm? RMSNorm reduces the computational overhead by avoiding the calculation of mean and variance. Also, according to the paper by the Author, RMSNorm gives performance advantages while not compromising on accuracy.
 
 - Rotary Positional Encoding
-![image](https://github.com/user-attachments/assets/7b78ee86-994a-4488-990d-961bf0e9f589)
+![ROPE_LLAMA3](https://github.com/user-attachments/assets/b342ef37-17e1-4231-aefb-fd2d299bc1e3)
 
-![image](https://github.com/user-attachments/assets/d4bdcaa5-0626-4c6c-a370-96e708a678a9)
+
+![ROPE_Example_LLAMA3](https://github.com/user-attachments/assets/b4333c9e-e622-4535-8948-eeeaf096d308)
 
 
 Let’s say the input text is “I love apple” or “apple love I”, the model will still treat both sentences as the same and learn it as the same. Because there is no order defined in the embeddings for the model to learn. Hence, the order is very important for any language model. In Llama 3 model architecture, RePE is used to define the position of each token in the sentences that maintain not only the order but also maintains the relative position of tokens in the sentences.
@@ -43,19 +45,22 @@ RoPE is a type of position encoding that encodes the embeddings which maintains 
 Note: the rotation matrix needs to be converted to polar form and the embedding vector needs to converted to complex before performing rotation. After rotation is completed, the rotated embeddings need to be converted back to real for attention operation. Also, RoPE is applied to Query and Key embedding only. It doesn’t apply to Value embedding.
 
 - KV Cache
-![image](https://github.com/user-attachments/assets/9283d15a-dad8-478f-832d-ca1776f79647)
+![KV_Cache_LLAMA3](https://github.com/user-attachments/assets/b37d2d4d-0ff6-48fd-a530-da9e9e0054d7)
+
 
 In Llama 3 architecture, at the time of inferencing, the concept of KV-Cache is introduced to store previously generated tokens in the form of Key and Value cache. These caches will be used to calculate self-attention to generate the next token. Only key and value tokens are cached whereas query tokens are not cached, hence the term KV Cache.
 
 - Group Query Attention
-![image](https://github.com/user-attachments/assets/4306627d-065a-4045-bbc4-1735c316f8f5)
+![GQA_LLAMA3](https://github.com/user-attachments/assets/a8d1fe42-83e2-43fd-847d-e73bccac4f97)
+
 
 Group query attention is the same as Muilt-Head attention which was used in previous models such as Llama 1 with the only difference being in the use of separate heads for queries and separate heads for keys/values. Usually, the number of heads assigned to queries is n-times to that of keys, and values heads.
 
 The KV cache helps reduce computation resources greatly. However, as KV Cache stores more and more previous tokens, the memory resources will increase significantly. This is not a good thing for the model performance point of view as well as the financial point of view. Hence, Group query attention is introduced. Reducing the number of heads for K and V decreases the number of parameters to be stored, and hence, less memory is being used. Various test results have proven that the model accuracy remains in the same ranges with this approach.
 
 - FeedForward Network (SwiGLU Activation)
-![image](https://github.com/user-attachments/assets/7135bab7-c157-4fec-8bc1-b22fdc343e76)
+![SWIGLU_LLAMA3](https://github.com/user-attachments/assets/d76a986e-9d1b-4eb1-9832-c5aed835aa65)
+
 
 The attention output is first normalized during RMSNorm and then fed into the FeedForward network. Inside the feedforward network, the attention output embeddings will be expanded to the higher dimension throughout its hidden layers and learn more complex features of the tokens.
 
@@ -68,7 +73,8 @@ The output of the FeedForward network is added again with the attention output. 
 
 
 Finally the output block
-![image](https://github.com/user-attachments/assets/46d358fe-4905-4982-be7b-dda0a67a10c7)
+![OB_LLAMA3](https://github.com/user-attachments/assets/521a04a0-4407-4aec-8b95-93cc9200b4f1)
+
 
 The decoder output of the final decoder block will feed into the output block. It is first fed into the RMSNorm. Then, it will feed into the Linear Layer which generates logits. Next, one of the following two operations happens.
 
